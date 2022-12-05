@@ -9,7 +9,7 @@ const User = require('./db/userModal');
 
 dbConnect();
 
-// Curb Cores Error by adding a header here
+//  Curb Cores Error by adding a header here
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
