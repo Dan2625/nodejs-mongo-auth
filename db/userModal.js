@@ -1,3 +1,5 @@
+const ROLES = require('../helpers/role');
+
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -10,8 +12,15 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Please provide a password'],
-    uniqe: false,
+  },
+  role: {
+    type: String,
+    required: true,
+    enum: [ROLES.STUDENT, ROLES.MENTOR],
   },
 });
 
-module.exports = mongoose.model.Users || mongoose.model('Users', UserSchema);
+const UserModel = mongoose.model('Users', UserSchema);
+
+UserModel.createIndexes();
+module.exports = mongoose.model.Users || UserModel;

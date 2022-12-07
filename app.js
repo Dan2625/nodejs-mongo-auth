@@ -7,7 +7,9 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const auth = require('./auth');
 const User = require('./db/userModal');
-
+const ROLES = require('./helpers/role');
+const codeBlocksList = require('./data/codeBlocks');
+const studentsList = require('./data/studentsList');
 dbConnect();
 
 // Hanling cors errors
@@ -42,6 +44,7 @@ app.post('/register', (request, response) => {
       const user = new User({
         username: request.body.username,
         password: hashedPassword,
+        role: request.body.role,
       });
       //validate if username is already exict.
       user
@@ -88,6 +91,7 @@ app.post('/login', (request, response) => {
             {
               userId: user._id,
               userUsername: user.username,
+              role: user.role,
             },
             'RANDOM-TOKEN',
             { expiresIn: '24h' }
@@ -97,6 +101,7 @@ app.post('/login', (request, response) => {
           response.status(200).send({
             message: 'Login Successful',
             username: user.username,
+            role: user.role,
             token,
           });
         })
@@ -117,14 +122,26 @@ app.post('/login', (request, response) => {
     });
 });
 
-// free endpoint
-app.get('/free-endpoint', (request, response) => {
-  response.json({ message: 'You are free to access me anytime' });
+// authentication code blocks endpoint
+app.get('/code-blocks', auth, (request, response) => {
+  console.log({ user: request.user });
+  const { user } = request;
+  if (user?.role !== ROLES.MENTOR) {
+    response.status(401).send({ message: 'User role is invalid' });
+  }
+  console.log({ codeBlocksList });
+  response.json({ codeBlocksList });
 });
 
-// authentication endpoint
-app.get('/auth-endpoint', auth, (request, response) => {
-  response.json({ message: 'You are authorized to access me' });
+// mentor get students list
+app.get('/students', auth, (request, response) => {
+  console.log({ user: request.user });
+  const { user } = request;
+  if (user?.role !== ROLES.MENTOR) {
+    response.status(401).send({ message: 'User role is invalid' });
+  }
+  console.log({ studentsList });
+  response.json({ studentsList });
 });
 
 module.exports = app;
