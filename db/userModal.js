@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: [true, 'Provide a user name'],
-    uniqe: [true, 'Username exist'],
+    uniqe: true,
   },
 
   password: {

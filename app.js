@@ -4,12 +4,14 @@ const bodyParser = require('body-parser');
 const dbConnect = require('./db/dbConnect');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const auth = require('./auth');
 const User = require('./db/userModal');
 
 dbConnect();
 
-//  Curb Cores Error by adding a header here
+// Hanling cors errors
+app.use(cors());
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -41,6 +43,7 @@ app.post('/register', (request, response) => {
         username: request.body.username,
         password: hashedPassword,
       });
+      //validate if username is already exict.
       user
         .save()
         .then((result) => {
