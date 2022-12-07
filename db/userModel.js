@@ -19,8 +19,9 @@ const UserSchema = new mongoose.Schema({
     enum: [ROLES.STUDENT, ROLES.MENTOR],
   },
 });
-
+UserSchema.index({ username: 1, role: 1 }, { unique: true });
 const UserModel = mongoose.model('Users', UserSchema);
 
-UserModel.createIndexes();
-module.exports = mongoose.model.Users || UserModel;
+// UserModel.createIndexes();
+// module.exports = mongoose.model.Users || UserModel;
+module.exports = UserModel;

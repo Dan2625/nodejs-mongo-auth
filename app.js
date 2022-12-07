@@ -6,10 +6,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const auth = require('./auth');
-const User = require('./db/userModal');
+const User = require('./db/userModel');
 const ROLES = require('./helpers/role');
 const codeBlocksList = require('./data/codeBlocks');
-const studentsList = require('./data/studentsList');
+const { findAllStudents } = require('./controllers/users');
 dbConnect();
 
 // Hanling cors errors
@@ -134,14 +134,15 @@ app.get('/code-blocks', auth, (request, response) => {
 });
 
 // mentor get students list
-app.get('/students', auth, (request, response) => {
+app.get('/students', auth, async (request, response) => {
   console.log({ user: request.user });
   const { user } = request;
   if (user?.role !== ROLES.MENTOR) {
     response.status(401).send({ message: 'User role is invalid' });
   }
-  console.log({ studentsList });
-  response.json({ studentsList });
+  const users = await findAllStudents();
+  console.log({ users });
+  response.json({ users });
 });
 
 module.exports = app;

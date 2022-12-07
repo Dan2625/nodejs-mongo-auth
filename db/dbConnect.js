@@ -8,6 +8,7 @@ async function dbConnect() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
+      autoIndex: true,
     })
     .then(() => {
       console.log('Successfully connected to MongoDB Atlas!');
